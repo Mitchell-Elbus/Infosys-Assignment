@@ -1,13 +1,13 @@
 package com.infosys.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-
 
 import com.infosys.models.Reservation;
 import com.infosys.util.ConnectionFactory;
@@ -23,28 +23,47 @@ public class ReservationDAO implements DAO<Reservation> {
 	public List<Reservation> getAll() {
 		
 		
-		List<Reservation> reimbursments = new ArrayList<>();
+		List<Reservation> reservations = new ArrayList<>();
+
+		try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
+			
+			ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM Reservation"); 
+			reservations = this.mapResultSet(rs);
+			
+			
+			
+		} catch (SQLException e) {
+			log.error(e.getMessage());
+		}
+		
+		return reservations;
+	}
+
+	
+	
+	@Override
+	public Reservation getById(int res_id) {
+		
+		Reservation res = new Reservation();
 
 		try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-			 // TODO JOIN ers_user_roles USING (role_id)   ///// Possible callable statement here to return result set including users
-			ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM ers_reimbursment WHERE reimb_status_id = 1"); 
-			
-			reimbursments = this.mapResultSet(rs);
-			
+
+			PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM Reservation WHERE res_id = ?");
+			pstmt.setInt(1, res_id);
+
+			ResultSet rs = pstmt.executeQuery();
+			res = this.mapResultSet(rs).get(0);
 
 		} catch (SQLException e) {
 			log.error(e.getMessage());
 		}
 
-		return reimbursments;
+		return res;
+		
 	}
 
-	@Override
-	public Reservation getById(int id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
+	
 	@Override
 	public Reservation add(Reservation obj) {
 		// TODO Auto-generated method stub

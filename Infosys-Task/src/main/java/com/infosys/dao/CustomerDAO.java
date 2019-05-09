@@ -25,7 +25,7 @@ public class CustomerDAO implements DAO<Customer>{
 		
 		try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
 			
-			ResultSet rs = conn.createStatement().executeQuery("SELECT * CUSTOMER"); //JOIN user_roles USING (role_id)
+			ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM Customer");
 			cust = this.mapResultSet(rs);
 			
 			// Hide all user passwords for security purposes
