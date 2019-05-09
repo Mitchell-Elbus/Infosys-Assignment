@@ -62,7 +62,7 @@ public class CustomerDAO implements DAO<Customer>{
 			log.error(e.getMessage());
 			
 		}
-		return null;
+		return cust;
 	}
 
 	
