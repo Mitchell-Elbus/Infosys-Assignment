@@ -65,9 +65,47 @@ public class ReservationDAO implements DAO<Reservation> {
 	
 	
 	@Override
-	public Reservation add(Reservation obj) {
-		// TODO Auto-generated method stub
-		return null;
+	public Reservation add(Reservation newRes) {
+		
+		try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+			conn.setAutoCommit(false);
+			
+			log.info("inside of Reservation DAO add() ");
+			log.info("");
+			log.info(newRes.getRes_cust_id());
+			
+			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Reservation VALUES (0, ?, ?)", new String[] {"RES_ID"}); 
+			pstmt.setInt(1, newRes.getRes_flight_id());	
+			pstmt.setInt(2, newRes.getRes_cust_id());	
+			
+
+			
+			log.info("about to executeUpdate in reimbursmentDAO ");
+			if(pstmt.executeUpdate() != 0) {
+				
+				// Retrieve the generated primary key for the newly added reservation
+				ResultSet rs = pstmt.getGeneratedKeys();
+				
+				
+				while(rs.next()) {
+					newRes.setRes_id(rs.getInt(1));
+				}
+				
+				conn.commit();
+				
+			}
+		}
+		
+		catch (SQLException e) {
+			log.error(e.getMessage());
+		}
+
+		if (newRes.getRes_id() == 0) return null;
+
+		return newRes;
+		
+		
 	}
 
 	@Override

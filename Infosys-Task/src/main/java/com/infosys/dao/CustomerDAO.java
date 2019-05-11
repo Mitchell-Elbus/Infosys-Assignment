@@ -42,19 +42,19 @@ public class CustomerDAO implements DAO<Customer>{
 
 	
 	@Override
-	public Customer getById(int id) {
+	public Customer getById(int cust_id) {
 		Customer cust = new Customer();
 		
 		try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-			
+			log.info("this is the id passed in " + cust_id);
 			PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM Customer WHERE CUST_ID = ?");
-			pstmt.setInt(1, id);
+			pstmt.setInt(1, cust_id);
 			
 			ResultSet rs = pstmt.executeQuery();
-			List<Customer> users = this.mapResultSet(rs);
+			List<Customer> customer = this.mapResultSet(rs);
 			
-			if(!users.isEmpty()) {
-				cust = users.get(0);
+			if(!customer.isEmpty()) {
+				cust = customer.get(0);
 				cust.setCust_password("*********");
 			}
 			
