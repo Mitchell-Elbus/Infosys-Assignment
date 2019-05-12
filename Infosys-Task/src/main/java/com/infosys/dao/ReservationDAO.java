@@ -75,13 +75,16 @@ public class ReservationDAO implements DAO<Reservation> {
 			log.info("");
 			log.info(newRes.getRes_cust_id());
 			
-			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Reservation VALUES (0, ?, ?)", new String[] {"RES_ID"}); 
+			String[] keys = new String[1];
+			keys[0] = "res_id";
+			
+			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Reservation VALUES (0, ?, ?)", keys); 
 			pstmt.setInt(1, newRes.getRes_flight_id());	
 			pstmt.setInt(2, newRes.getRes_cust_id());	
 			
 
 			
-			log.info("about to executeUpdate in reimbursmentDAO ");
+			log.info("about to executeUpdate in ReservationDAO ");
 			if(pstmt.executeUpdate() != 0) {
 				
 				// Retrieve the generated primary key for the newly added reservation
